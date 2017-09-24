@@ -1,0 +1,4 @@
+include ':BucaramangaEAR'
+include ':BucaramangaEJB'
+include ':BucaramangaWeb'
+rootProject.name='BucaramangaApp'

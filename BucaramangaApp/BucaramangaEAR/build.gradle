@@ -1,0 +1,62 @@
+apply plugin: 'ear'
+apply plugin: 'java'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	deploy project(path:':BucaramangaEJB', configuration:'archives')
+	deploy project(path:':BucaramangaWeb', configuration:'archives')
+	earlib 'org.springframework.data:spring-data-jpa:1.11.7.RELEASE'
+	earlib 'org.springframework:spring-webmvc:4.2.0.RELEASE'
+ 	earlib 'org.springframework:spring-core:4.2.0.RELEASE'
+ 	earlib 'org.springframework:spring-web:4.2.0.RELEASE'
+ 	earlib 'org.apache.httpcomponents:httpclient:4.5'
+ 	earlib 'com.fasterxml.jackson.core:jackson-core:2.6.0'
+ 	earlib 'com.fasterxml.jackson.core:jackson-databind:2.6.0'
+ 	earlib 'org.jasypt:jasypt:1.9.2'
+ 	
+}
+
+ear {
+	archiveName = "${baseName}.${extension}"
+}
+
+task deploy(dependsOn: 'build' , type: Copy) {
+ 
+     println "Configurando Despliegue"
+ 
+     from('build/libs/') {
+          include '*.ear'
+     }
+ 
+     def target="${project.name}.ear"
+     def JBOSS_HOME = System.getenv('JBOSS_HOME')
+     
+     into "$JBOSS_HOME"+"/standalone/deployments/"
+     
+     def ok=new File("${JBOSS_HOME}/standalone/deployments/${target}.deployed");
+     def nok=new File("${JBOSS_HOME}/standalone/deployments/${target}.failed");   
+ 
+     doFirst {
+          println "Borrando ear anteriores"
+          if(ok.exists()) { ok.delete() }
+          if(nok.exists()) { nok.delete() }
+ 
+     }
+ 
+     doLast {
+          println "ejecutando ear..."
+          def deployed=false
+          for(def i=0;i<80;i++) {
+          
+               if(ok.exists()) { deployed=true; break }
+               if(nok.exists()) { break }
+               sleep(500);
+          }
+ 
+          if(deployed) { println("despligue exitoso.") }
+          else { throw new RuntimeException("Despligue fallido, ver jboss logs!") }
+     }
+}

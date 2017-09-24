@@ -1,0 +1,21 @@
+apply plugin: 'war'
+apply plugin: 'jacoco'
+
+[ compileJava, compileTestJava ]*.options*.encoding = 'UTF-8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	providedCompile 'org.jboss.spec:jboss-javaee-6.0:3.0.3.Final'
+	providedCompile project (':BucaramangaEJB')
+	providedCompile 'com.fasterxml.jackson.core:jackson-annotations:2.6.4'
+	providedCompile 'org.jboss.logging:jboss-logging:3.1.4.GA'
+	
+	testCompile 'junit:junit:4.11'
+}
+
+war {
+	archiveName = "${baseName}.${extension}"
+}

@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+
+[ compileJava, compileTestJava ]*.options*.encoding = 'UTF-8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	compile 'org.springframework.data:spring-data-jpa:1.11.7.RELEASE'
+	compile 'org.jboss.spec:jboss-javaee-6.0:3.0.3.Final'
+	compile 'org.jasypt:jasypt:1.9.2'
+	testCompile 'junit:junit:4.11'
+
+}
+
+jar {
+	archiveName = "${baseName}.${extension}"
+}
